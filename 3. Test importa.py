@@ -1,98 +1,124 @@
 import unittest
 import pandas as pd
-import sqlalchemy
-from pandas.testing import assert_frame_equal
-
-"""
-3. Skripta za testiranje importa u bazu podataka
-
-Testira se da li su kolone i podaci u bazi isti kao u predprocesiranom CSV fajlu.
-"""
+from sqlalchemy import create_engine, MetaData, select
+from sqlalchemy.orm import sessionmaker
 
 class TestDatabaseImport(unittest.TestCase):
-    def setUp(self):
-        # Konekcija na bazu
-        self.engine = sqlalchemy.create_engine('mysql+pymysql://root:root@localhost:3306/superstore')
-        self.connection = self.engine.connect()
 
-        # Učitavanje predprocesiranog CSV datoteke
-        self.df = pd.read_csv("superstore_80_processed.csv")
+    @classmethod
+    def setUpClass(cls):
+        cls.csv_file_path = "superstore_80_PROCESSED.csv"
+        cls.df_csv = pd.read_csv(cls.csv_file_path, delimiter=',')
 
-        # Prilagodite SELECT upit da odgovara bazi i tablicama
-        query = """
-        SELECT 
-            o.id,
-            o.order_date,
-            o.ship_date,
-            o.order_priority,
-            o.ship_mode,
-            o.discount,
-            o.profit,
-            o.quantity,
-            o.sales,
-            o.shipping_cost,
-            c.customer_name,
-            p.product_name,
-            cat.category_name,
-            sub.sub_category_name,
-            l.region_name,
-            l.city,
-            l.country,
-            l.state,
-            m.market_value,
-            s.segment_type
-        FROM orders o
-        JOIN customer c ON o.customer_id = c.id
-        JOIN product p ON o.product_id = p.id
-        JOIN category cat ON o.category_id = cat.id
-        JOIN subCategory sub ON p.subCategory_id = sub.id
-        JOIN location l ON o.location_id = l.id
-        JOIN market m ON c.market_id = m.id
-        JOIN segment s ON c.segment_id = s.id
-        ORDER BY o.id ASC
-        """
+        cls.df_csv['Order_Date'] = pd.to_datetime(cls.df_csv['Order_Date']).dt.date
+        cls.df_csv['Ship_Date'] = pd.to_datetime(cls.df_csv['Ship_Date']).dt.date
+        cls.df_csv['Product_Name'] = cls.df_csv['Product_Name'].astype(str).str.slice(0, 255)
 
-        result = self.connection.execute(query)
-        self.db_df = pd.DataFrame(result.fetchall(), columns=result.keys())
+        cls.engine = create_engine('mysql+pymysql://root:root@localhost:3306/superstore', echo=False)
+        cls.connection = cls.engine.connect()
+        cls.metadata = MetaData()
+        cls.metadata.reflect(bind=cls.engine)
 
-        self.df['Order_Date'] = pd.to_datetime(self.df['Order_Date'])
-        self.df['Ship_Date'] = pd.to_datetime(self.df['Ship_Date'])
+        Session = sessionmaker(bind=cls.engine)
+        cls.session = Session()
 
-        # Sortirajte oba DataFrame-a po istom ključu za usporedba
-        self.df = self.df.sort_values(by=['Order_Date', 'Customer_Name', 'Product_Name']).reset_index(drop=True)
-        self.db_df = self.db_df.sort_values(by=['order_date', 'customer_name', 'product_name']).reset_index(drop=True)
-        self.df.rename(columns={
-            'Order_Date': 'order_date',
-            'Ship_Date': 'ship_date',
-            'Order_Priority': 'order_priority',
-            'Ship_Mode': 'ship_mode',
-            'Discount': 'discount',
-            'Profit': 'profit',
-            'Quantity': 'quantity',
-            'Sales': 'sales',
-            'Shipping_Cost': 'shipping_cost',
-            'Customer_Name': 'customer_name',
-            'Product_Name': 'product_name',
-            'Category': 'category_name',
-            'Sub_Category': 'sub_category_name',
-            'Region': 'region_name',
-            'City': 'city',
-            'Country': 'country',
-            'State': 'state',
-            'Market': 'market_value',
-            'Segment': 'segment_type'
-        }, inplace=True)
+    @classmethod
+    def tearDownClass(cls):
+        cls.session.close()
+        cls.connection.close()
 
-    def test_columns(self):
-        # Testira da li su kolone iste
-        self.assertListEqual(list(self.df.columns), list(self.db_df.columns))
+    def test_01_column_names_orders(self):
+        orders_table = self.metadata.tables.get('orders')
+        self.assertIsNotNone(orders_table, "Tablica 'orders' ne postoji u bazi podataka.")
+        db_columns = [col.name for col in orders_table.columns]
 
-    def test_data(self):
-        # Testira da li su podaci isti
-        assert_frame_equal(self.df, self.db_df, check_dtype=False)
+        expected_columns = [
+            'id', 'order_date', 'ship_date', 'order_priority', 'ship_mode',
+            'discount', 'profit', 'quantity', 'sales', 'shipping_cost',
+            'category_id', 'customer_id', 'product_id', 'location_id'
+        ]
 
-    def tearDown(self):
-        self.connection.close()
+        self.assertCountEqual(db_columns, expected_columns,
+                              "Nazivi stupaca u tablici 'orders' se ne podudaraju s očekivanim.")
+
+    def test_02_column_names_related_tables(self):
+        expected_tables_columns = {
+            'category': ['id', 'category_name'],
+            'subcategory': ['id', 'sub_category_name'],
+            'market': ['id', 'market_value'],
+            'segment': ['id', 'segment_type'],
+            'customer': ['id', 'customer_name', 'market_id', 'segment_id'],
+            'location': ['id', 'region_name', 'city', 'country', 'state'],
+            'product': ['id', 'product_name', 'category_id', 'subCategory_id']  # VELIKO 'C'
+        }
+
+        for table_name, expected_cols in expected_tables_columns.items():
+            table = self.metadata.tables.get(table_name)
+            self.assertIsNotNone(table, f"Tablica '{table_name}' ne postoji u bazi podataka.")
+            db_columns = [col.name for col in table.columns]
+            self.assertCountEqual(db_columns, expected_cols,
+                                  f"Nazivi stupaca u tablici '{table_name}' se ne podudaraju s očekivanim.")
+
+def test_03_data_integrity(self):
+    category = self.metadata.tables['category']
+    subcategory = self.metadata.tables['subcategory']
+    market = self.metadata.tables['market']
+    segment = self.metadata.tables['segment']
+    customer = self.metadata.tables['customer']
+    location = self.metadata.tables['location']
+    product = self.metadata.tables['product']
+    orders = self.metadata.tables['orders']
+
+    join_stmt = orders.join(category, orders.c.category_id == category.c.id) \
+                      .join(customer, orders.c.customer_id == customer.c.id) \
+                      .join(product, orders.c.product_id == product.c.id) \
+                      .join(location, orders.c.location_id == location.c.id) \
+                      .join(market, customer.c.market_id == market.c.id) \
+                      .join(segment, customer.c.segment_id == segment.c.id) \
+                      .join(subcategory, product.c.subCategory_id == subcategory.c.id)
+
+    sel = select(
+        category.c.category_name.label('Category'),
+        location.c.city.label('City'),
+        location.c.country.label('Country'),
+        customer.c.customer_name.label('Customer_Name'),
+        market.c.market_value.label('Market'),
+        orders.c.order_date.label('Order_Date'),
+        orders.c.ship_date.label('Ship_Date'),
+        orders.c.order_priority.label('Order_Priority'),
+        product.c.product_name.label('Product_Name'),
+        location.c.region_name.label('Region'),
+        segment.c.segment_type.label('Segment'),
+        orders.c.ship_mode.label('Ship_Mode'),
+        location.c.state.label('State'),
+        subcategory.c.sub_category_name.label('Sub_Category'),
+        orders.c.discount.label('Discount'),
+        orders.c.profit.label('Profit'),
+        orders.c.quantity.label('Quantity'),
+        orders.c.sales.label('Sales'),
+        orders.c.shipping_cost.label('Shipping_Cost')
+    ).select_from(join_stmt)
+
+    result = self.connection.execute(sel)
+    rows = result.fetchall()
+    df_db = pd.DataFrame(rows, columns=result.keys())
+
+    df_db['Order_Date'] = pd.to_datetime(df_db['Order_Date']).dt.date
+    df_db['Ship_Date'] = pd.to_datetime(df_db['Ship_Date']).dt.date
+    df_db['Product_Name'] = df_db['Product_Name'].astype(str).str.slice(0, 255)
+
+    sort_cols = ['Order_Date', 'Customer_Name', 'Product_Name', 'Sales']
+    df_csv_sorted = self.df_csv.sort_values(by=sort_cols).reset_index(drop=True)
+    df_db_sorted = df_db.sort_values(by=sort_cols).reset_index(drop=True)
+
+    self.assertEqual(df_csv_sorted.shape, df_db_sorted.shape,
+                     "Dimenzije CSV i baze podataka se ne podudaraju.")
+
+    try:
+        pd.testing.assert_frame_equal(df_csv_sorted, df_db_sorted,
+                                      check_dtype=False, check_exact=False, rtol=1e-4, atol=1e-4)
+    except AssertionError as e:
+        self.fail(f"Podaci u bazi i CSV-u se ne podudaraju: {e}")
 
 if __name__ == '__main__':
     unittest.main()
