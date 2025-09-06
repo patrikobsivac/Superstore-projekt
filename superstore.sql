@@ -2,12 +2,17 @@ DROP DATABASE superstore;
 CREATE DATABASE superstore;
 USE superstore;
 
+
 CREATE TABLE dim_Customer (
     customer_id INT PRIMARY KEY,
     customer_name VARCHAR(60),
     market_value VARCHAR(30),
     segment_type VARCHAR(45)
 );
+ALTER TABLE dim_Customer 
+ADD COLUMN version INT DEFAULT 1,
+ADD COLUMN date_from DATE,
+ADD COLUMN date_to DATE;
 
 CREATE TABLE dim_Product (
     product_id INT PRIMARY KEY,
@@ -52,5 +57,5 @@ CREATE TABLE Fact_Orders (
     FOREIGN KEY (ship_date_id) REFERENCES dim_Date(date_id)
 );
 
- SELECT * FROM superstore.dim_location;
- SELECT * FROM orders
+ SELECT * FROM superstore.Fact_Orders;
+ SELECT * FROM customer

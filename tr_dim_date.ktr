@@ -430,7 +430,7 @@
     <created_date>2025/09/06 21:04:39.764</created_date>
     <modified_user>-</modified_user>
     <modified_date>2025/09/06 21:04:39.764</modified_date>
-    <key_for_session_key/>
+    <key_for_session_key>H4sIAAAAAAAAAAMAAAAAAAAAAAA=</key_for_session_key>
     <is_key_private>N</is_key_private>
   </info>
   <notepads>
@@ -516,6 +516,44 @@
     </GUI>
   </step>
   <step>
+    <name>Row normaliser</name>
+    <type>Normaliser</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <typefield>Date_Type</typefield>
+    <fields>
+      <field>
+        <name>Order_Date</name>
+        <value>ORDER</value>
+        <norm>Full_Date</norm>
+      </field>
+      <field>
+        <name>Ship_Date</name>
+        <value>SHIP</value>
+        <norm>Full_Date</norm>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>688</xloc>
+      <yloc>352</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
     <name>Select values</name>
     <type>SelectValues</type>
     <description/>
@@ -529,11 +567,9 @@
     <fields>
       <field>
         <name>Order_Date</name>
-        <rename/>
       </field>
       <field>
         <name>Ship_Date</name>
-        <rename/>
       </field>
       <select_unspecified>N</select_unspecified>
     </fields>
@@ -583,44 +619,6 @@
     <GUI>
       <xloc>811</xloc>
       <yloc>221</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Row normaliser</name>
-    <type>Normaliser</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <typefield>Full_Date</typefield>
-    <fields>
-      <field>
-        <name>Order_Date</name>
-        <value>Date</value>
-        <norm/>
-      </field>
-      <field>
-        <name>Ship_Date</name>
-        <value>Date</value>
-        <norm/>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>688</xloc>
-      <yloc>352</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
