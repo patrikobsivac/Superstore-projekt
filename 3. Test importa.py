@@ -49,7 +49,7 @@ class TestDatabaseImport(unittest.TestCase):
             'segment': ['id', 'segment_type'],
             'customer': ['id', 'customer_name', 'market_id', 'segment_id'],
             'location': ['id', 'region_name', 'city', 'country', 'state'],
-            'product': ['id', 'product_name', 'category_id', 'subCategory_id']  # VELIKO 'C'
+            'product': ['id', 'product_name', 'category_id', 'subCategory_id'] 
         }
 
         for table_name, expected_cols in expected_tables_columns.items():

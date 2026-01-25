@@ -1,5 +1,5 @@
 # Provjera da li je python instaliran na sustavu
-print("Hello World")
+print("Test Test")
 
 # Učitavanje potrebnih biblioteka
 import pandas as pd

@@ -1,7 +1,7 @@
 # Imports
 import pandas as pd
 from sqlalchemy import create_engine, Column, Integer, Date, String, Float, ForeignKey, UniqueConstraint
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.orm import sessionmaker, declarative_base, relationship
 from datetime import datetime
 
 """
@@ -22,21 +22,26 @@ class Category(Base):
     __tablename__ = 'category'
     id = Column(Integer, primary_key=True)
     category_name = Column(String(45), nullable=False, unique=True)
+    products = relationship("Product", back_populates="category")
+    orders = relationship("Order", back_populates="category")
 
 class SubCategory(Base):
     __tablename__ = 'subCategory'
     id = Column(Integer, primary_key=True)
     sub_category_name = Column(String(45), nullable=False, unique=True)
+    products = relationship("Product", back_populates="sub_category")
 
 class Market(Base):
     __tablename__ = 'market'
     id = Column(Integer, primary_key=True)
     market_value = Column(String(30), nullable=False, unique=True)
+    customers = relationship("Customer", back_populates="market")
 
 class Segment(Base):
     __tablename__ = 'segment'
     id = Column(Integer, primary_key=True)
     segment_type = Column(String(45), nullable=False, unique=True)
+    customers = relationship("Customer", back_populates="segment")
 
 class Customer(Base):
     __tablename__ = 'customer'
@@ -44,6 +49,9 @@ class Customer(Base):
     customer_name = Column(String(60), nullable=False, unique=True)
     market_id = Column(Integer, ForeignKey('market.id'))
     segment_id = Column(Integer, ForeignKey('segment.id'))
+    market = relationship("Market", back_populates="customers")
+    segment = relationship("Segment", back_populates="customers")
+    orders = relationship("Order", back_populates="customer")
 
 class Location(Base):
     __tablename__ = 'location'
@@ -52,6 +60,7 @@ class Location(Base):
     city = Column(String(60), nullable=False)
     country = Column(String(60), nullable=False)
     state = Column(String(60), nullable=False)
+    orders = relationship("Order", back_populates="location")
     __table_args__ = (
         UniqueConstraint('region_name', 'city', 'country', 'state', name='unique_location'),
     )
@@ -62,6 +71,9 @@ class Product(Base):
     product_name = Column(String(255), nullable=False, unique=True)
     category_id = Column(Integer, ForeignKey('category.id'))
     subCategory_id = Column(Integer, ForeignKey('subCategory.id'))
+    category = relationship("Category", back_populates="products")
+    sub_category = relationship("SubCategory", back_populates="products")
+    orders = relationship("Order", back_populates="product")
 
 class Order(Base):
     __tablename__ = 'orders'
@@ -79,6 +91,10 @@ class Order(Base):
     customer_id = Column(Integer, ForeignKey('customer.id'))
     product_id = Column(Integer, ForeignKey('product.id'))
     location_id = Column(Integer, ForeignKey('location.id'))
+    category = relationship("Category", back_populates="orders")
+    customer = relationship("Customer", back_populates="orders")
+    product = relationship("Product", back_populates="orders")
+    location = relationship("Location", back_populates="orders")
 
 # Kreiranje konekcije na bazu
 engine = create_engine('mysql+pymysql://root:root@localhost:3306/superstore', echo=False)
