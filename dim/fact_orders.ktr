@@ -482,7 +482,7 @@
     </hop>
     <hop>
       <from>Select values</from>
-      <to>Table output</to>
+      <to> </to>
       <enabled>Y</enabled>
     </hop>
     <hop>
@@ -501,6 +501,90 @@
       <enabled>Y</enabled>
     </hop>
   </order>
+  <step>
+    <name> </name>
+    <type>TableOutput</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>superstore_db</connection>
+    <schema>superstore</schema>
+    <table>fact_orders</table>
+    <commit>1</commit>
+    <truncate>N</truncate>
+    <ignore_errors>N</ignore_errors>
+    <use_batch>Y</use_batch>
+    <specify_fields>Y</specify_fields>
+    <partitioning_enabled>N</partitioning_enabled>
+    <partitioning_field/>
+    <partitioning_daily>N</partitioning_daily>
+    <partitioning_monthly>Y</partitioning_monthly>
+    <tablename_in_field>N</tablename_in_field>
+    <tablename_field/>
+    <tablename_in_table>Y</tablename_in_table>
+    <return_keys>N</return_keys>
+    <return_field/>
+    <fields>
+      <field>
+        <column_name>product_key</column_name>
+        <stream_name>product_key</stream_name>
+      </field>
+      <field>
+        <column_name>customer_key</column_name>
+        <stream_name>customer_key</stream_name>
+      </field>
+      <field>
+        <column_name>location_key</column_name>
+        <stream_name>location_key</stream_name>
+      </field>
+      <field>
+        <column_name>shipping_key</column_name>
+        <stream_name>shipping_key</stream_name>
+      </field>
+      <field>
+        <column_name>time_key</column_name>
+        <stream_name>time_key</stream_name>
+      </field>
+      <field>
+        <column_name>order_id</column_name>
+        <stream_name>order_id</stream_name>
+      </field>
+      <field>
+        <column_name>sales</column_name>
+        <stream_name>sales</stream_name>
+      </field>
+      <field>
+        <column_name>quantity</column_name>
+        <stream_name>quantity</stream_name>
+      </field>
+      <field>
+        <column_name>profit</column_name>
+        <stream_name>profit</stream_name>
+      </field>
+      <field>
+        <column_name>order_date</column_name>
+        <stream_name>order_date</stream_name>
+      </field>
+    </fields>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>1184</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
   <step>
     <name>CSV file input</name>
     <type>CsvInput</type>
@@ -790,280 +874,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>160</xloc>
-      <yloc>240</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Lookup Customer</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>superstore_db</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema>superstore</schema>
-      <table>dim_customer</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>Customer_ID</name>
-        <field>customer_id_1</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>customer_id</name>
-        <rename>customer_key</rename>
-        <default/>
-        <type>None</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>464</xloc>
-      <yloc>368</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Lookup Location</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>superstore_db</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema>superstore</schema>
-      <table>dim_location</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>City</name>
-        <field>city</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>location_tk</name>
-        <rename>location_key_stream</rename>
-        <default/>
-        <type>None</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>864</xloc>
-      <yloc>368</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Lookup Product</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>superstore_db</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema>superstore</schema>
-      <table>dim_product</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>Product_ID</name>
-        <field>product_id</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>product_tk</name>
-        <rename>product_key_fact</rename>
-        <default/>
-        <type>Integer</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>592</xloc>
-      <yloc>368</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Lookup Shipping</name>
-    <type>DBLookup</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>superstore_db</connection>
-    <cache>N</cache>
-    <cache_load_all>N</cache_load_all>
-    <cache_size>0</cache_size>
-    <lookup>
-      <schema>superstore</schema>
-      <table>dim_shipping</table>
-      <orderby/>
-      <fail_on_multiple>N</fail_on_multiple>
-      <eat_row_on_failure>N</eat_row_on_failure>
-      <key>
-        <name>Ship_Mode</name>
-        <field>ship_mode</field>
-        <condition>=</condition>
-        <name2/>
-      </key>
-      <value>
-        <name>shipping_tk</name>
-        <rename>ship_key_stream</rename>
-        <default/>
-        <type>None</type>
-      </value>
-    </lookup>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1008</xloc>
-      <yloc>368</yloc>
-      <draw>Y</draw>
-    </GUI>
-  </step>
-  <step>
-    <name>Table output</name>
-    <type>TableOutput</type>
-    <description/>
-    <distribute>Y</distribute>
-    <custom_distribution/>
-    <copies>1</copies>
-    <partitioning>
-      <method>none</method>
-      <schema_name/>
-    </partitioning>
-    <connection>superstore_db</connection>
-    <schema>superstore</schema>
-    <table>fact_orders</table>
-    <commit>1</commit>
-    <truncate>N</truncate>
-    <ignore_errors>N</ignore_errors>
-    <use_batch>Y</use_batch>
-    <specify_fields>Y</specify_fields>
-    <partitioning_enabled>N</partitioning_enabled>
-    <partitioning_field/>
-    <partitioning_daily>N</partitioning_daily>
-    <partitioning_monthly>Y</partitioning_monthly>
-    <tablename_in_field>N</tablename_in_field>
-    <tablename_field/>
-    <tablename_in_table>Y</tablename_in_table>
-    <return_keys>N</return_keys>
-    <return_field/>
-    <fields>
-      <field>
-        <column_name>product_key</column_name>
-        <stream_name>product_key</stream_name>
-      </field>
-      <field>
-        <column_name>customer_key</column_name>
-        <stream_name>customer_key</stream_name>
-      </field>
-      <field>
-        <column_name>location_key</column_name>
-        <stream_name>location_key</stream_name>
-      </field>
-      <field>
-        <column_name>shipping_key</column_name>
-        <stream_name>shipping_key</stream_name>
-      </field>
-      <field>
-        <column_name>time_key</column_name>
-        <stream_name>time_key</stream_name>
-      </field>
-      <field>
-        <column_name>order_id</column_name>
-        <stream_name>order_id</stream_name>
-      </field>
-      <field>
-        <column_name>sales</column_name>
-        <stream_name>sales</stream_name>
-      </field>
-      <field>
-        <column_name>quantity</column_name>
-        <stream_name>quantity</stream_name>
-      </field>
-      <field>
-        <column_name>profit</column_name>
-        <stream_name>profit</stream_name>
-      </field>
-    </fields>
-    <attributes/>
-    <cluster_schema/>
-    <remotesteps>
-      <input>
-      </input>
-      <output>
-      </output>
-    </remotesteps>
-    <GUI>
-      <xloc>1184</xloc>
-      <yloc>240</yloc>
+      <xloc>144</xloc>
+      <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1134,7 +946,7 @@
     </remotesteps>
     <GUI>
       <xloc>304</xloc>
-      <yloc>240</yloc>
+      <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1166,8 +978,206 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>464</xloc>
-      <yloc>240</yloc>
+      <xloc>448</xloc>
+      <yloc>208</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup Customer</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>superstore_db</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema>superstore</schema>
+      <table>dim_customer</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>Customer_ID</name>
+        <field>customer_code</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>customer_id</name>
+        <rename>customer_key</rename>
+        <default/>
+        <type>None</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>448</xloc>
+      <yloc>336</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup Location</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>superstore_db</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema>superstore</schema>
+      <table>dim_location</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>City</name>
+        <field>city</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <key>
+        <name>State</name>
+        <field>state</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>location_tk</name>
+        <rename>location_key_stream</rename>
+        <default/>
+        <type>None</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>848</xloc>
+      <yloc>336</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup Product</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>superstore_db</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema>superstore</schema>
+      <table>dim_product</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>Product_ID</name>
+        <field>product_id</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>product_tk</name>
+        <rename>product_key_fact</rename>
+        <default/>
+        <type>Integer</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>576</xloc>
+      <yloc>336</yloc>
+      <draw>Y</draw>
+    </GUI>
+  </step>
+  <step>
+    <name>Lookup Shipping</name>
+    <type>DBLookup</type>
+    <description/>
+    <distribute>Y</distribute>
+    <custom_distribution/>
+    <copies>1</copies>
+    <partitioning>
+      <method>none</method>
+      <schema_name/>
+    </partitioning>
+    <connection>superstore_db</connection>
+    <cache>N</cache>
+    <cache_load_all>N</cache_load_all>
+    <cache_size>0</cache_size>
+    <lookup>
+      <schema>superstore</schema>
+      <table>dim_shipping</table>
+      <orderby/>
+      <fail_on_multiple>N</fail_on_multiple>
+      <eat_row_on_failure>N</eat_row_on_failure>
+      <key>
+        <name>Ship_Mode</name>
+        <field>ship_mode</field>
+        <condition>=</condition>
+        <name2/>
+      </key>
+      <value>
+        <name>shipping_tk</name>
+        <rename>ship_key_stream</rename>
+        <default/>
+        <type>None</type>
+      </value>
+    </lookup>
+    <attributes/>
+    <cluster_schema/>
+    <remotesteps>
+      <input>
+      </input>
+      <output>
+      </output>
+    </remotesteps>
+    <GUI>
+      <xloc>992</xloc>
+      <yloc>336</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1214,8 +1224,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>720</xloc>
-      <yloc>368</yloc>
+      <xloc>704</xloc>
+      <yloc>336</yloc>
       <draw>Y</draw>
     </GUI>
   </step>
@@ -1249,7 +1259,6 @@
       </field>
       <field>
         <name>customer_key</name>
-        <rename/>
       </field>
       <field>
         <name>Order_ID</name>
@@ -1271,6 +1280,10 @@
         <name>Order_Date</name>
         <rename>order_date</rename>
       </field>
+      <field>
+        <name>Discount</name>
+        <rename>discount</rename>
+      </field>
       <select_unspecified>N</select_unspecified>
       <meta>
         <name>time_key</name>
@@ -1289,6 +1302,74 @@
         <currency_symbol/>
         <storage_type>normal</storage_type>
       </meta>
+      <meta>
+        <name>Order_Date</name>
+        <rename>order_date</rename>
+        <type>Date</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask>yyyy-MM-dd</conversion_mask>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>Sales</name>
+        <rename>sales</rename>
+        <type>Number</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>Profit</name>
+        <rename>profit</rename>
+        <type>Number</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
+      <meta>
+        <name>Discount</name>
+        <rename>discount</rename>
+        <type>Number</type>
+        <length>-2</length>
+        <precision>-2</precision>
+        <conversion_mask/>
+        <date_format_lenient>false</date_format_lenient>
+        <date_format_locale/>
+        <date_format_timezone/>
+        <lenient_string_to_number>false</lenient_string_to_number>
+        <encoding/>
+        <decimal_symbol/>
+        <grouping_symbol/>
+        <currency_symbol/>
+        <storage_type/>
+      </meta>
     </fields>
     <attributes/>
     <cluster_schema/>
@@ -1299,8 +1380,8 @@
       </output>
     </remotesteps>
     <GUI>
-      <xloc>1008</xloc>
-      <yloc>240</yloc>
+      <xloc>992</xloc>
+      <yloc>208</yloc>
       <draw>Y</draw>
     </GUI>
   </step>

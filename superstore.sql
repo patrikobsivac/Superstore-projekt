@@ -88,23 +88,27 @@ CREATE TABLE fact_orders (
     CONSTRAINT fk_location FOREIGN KEY (location_key) REFERENCES dim_Location(location_tk),
     CONSTRAINT fk_shipping FOREIGN KEY (shipping_key) REFERENCES dim_Shipping(shipping_tk),
     CONSTRAINT fk_product FOREIGN KEY (product_key) REFERENCES dim_Product(product_tk),
-    CONSTRAINT fk_time FOREIGN KEY (time_key) REFERENCES dim_time(date_key)
+    CONSTRAINT fk_time FOREIGN KEY (time_key) REFERENCES dim_Time(date_key)
 );
 
 /* TEST */
-SELECT * FROM dim_shipping;
-DELETE FROM dim_shipping WHERE ship_mode IS NULL;
 SELECT * FROM fact_orders LIMIT 10;
 SELECT * FROM dim_location LIMIT 10;
 
-SELECT order_id, customer_key, product_key, sales 
-FROM fact_orders LIMIT 10;
+SELECT shipping_tk, ship_mode, shipping_cost, shipping_priority 
+	FROM dim_shipping 
+	ORDER BY shipping_tk ASC;
+    
+SELECT f.order_id, f.sales, s.ship_mode, s.shipping_cost, s.shipping_priority
+	FROM fact_orders f
+	JOIN dim_shipping s ON f.shipping_key = s.shipping_tk
+	LIMIT 10;
 
 SELECT p.product_name, c.customer_name, f.sales, f.profit 
 	FROM fact_orders f
-	JOIN dim_Product p ON f.product_key = p.product_key
+	JOIN dim_Product p ON f.product_key = p.product_tk
 	JOIN dim_Customer c ON f.customer_key = c.customer_id 
-WHERE f.sales > 1000;
+	WHERE f.sales > 1000;
 
 SELECT * FROM dim_time 
 	ORDER BY full_date ASC 
